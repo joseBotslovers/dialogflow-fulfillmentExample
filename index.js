@@ -45,11 +45,26 @@ app.post('/',express.json(), (req,res)=>{
         }))      
     }
 
-    var intentMap = new Map();
+    //funcion para traer parametros
+    function getQuestion(agent){
+      var contexto =  agent.context.get('getQuestion-followup');
+      var parametros = req.body.queryResult.parameters;
+      console.log(contexto);
+      //para entidades
+      var afirmativo = parametros.afirmativo;
+      //para contextos
+      /*var negativo = contexto.parameters.negativo;*/
+      agent.context.set({'name': 'getQuestion - yes', 'lifespan': 1, 'parameters': {'afirmativo': afirmativo}});
+      agent.add("Todo bien");
+    }
 
+    
+    var intentMap = new Map();
     //Intent y funcion para interactuar
     intentMap.set('webhookDemo', demo);
     intentMap.set('customPayloadDemo', customPayloadDemo);
+    intentMap.set('getQuestion - yes', getQuestion);
+    
 
     //
     agent.handleRequest(intentMap);
