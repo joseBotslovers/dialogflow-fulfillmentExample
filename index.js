@@ -9,6 +9,7 @@ app.get('/',(req,res)=>{
 
 
 app.post('/',express.json(), (req,res)=>{
+   
     const agent = new dfff.WebhookClient({
         request: req,
         response: res
@@ -46,10 +47,10 @@ app.post('/',express.json(), (req,res)=>{
     }
 
     //funcion para traer parametros
-    function getQuestion(agent){
+    function getQuestionYes(agent){
       var contexto =  agent.context.get('getQuestion-followup');
       var parametros = req.body.queryResult.parameters;
-      console.log(contexto);
+      console.log("respuesta: "+JSON.stringify(parametros));
       //para entidades
       var afirmativo = parametros.afirmativo;
       //para contextos
@@ -58,17 +59,24 @@ app.post('/',express.json(), (req,res)=>{
       agent.add("Todo bien");
     }
 
-    
+    function getQuestionNo(agent){
+      var parametros = req.body.queryResult.parameters;
+      console.log("respuesta: "+JSON.stringify(parametros)); 
+      var negativo = parametros.negativo;
+      agent.context.set({'name': 'getQuestion - no', 'lifespan': 1, 'parameters': {'negativo': negativo}});
+      agent.add("Todo mal, Es una pena");
+    }
+
+
+    //-------------------------------
     var intentMap = new Map();
     //Intent y funcion para interactuar
     intentMap.set('webhookDemo', demo);
     intentMap.set('customPayloadDemo', customPayloadDemo);
-    intentMap.set('getQuestion - yes', getQuestion);
-    
-
+    intentMap.set('getQuestion - yes', getQuestionYes);
+    intentMap.set('getQuestion - no', getQuestionNo);
     //
     agent.handleRequest(intentMap);
-
 })
 
 // ARRANCAMOS EL SERVICIO
@@ -82,5 +90,8 @@ app.listen(process.env.PORT || port, function () {
   console.log(`  Ejemplo escuchando en: ( http://localhost:${port} )`);
   console.log('\x1b[36m'+'------------------------------------------------ ');
   console.log('\x1b[0m');
+
+
+  
 });
 //Correr en nodemon --> npm run dev
