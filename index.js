@@ -15,12 +15,12 @@ app.post('/',express.json(), (req,res)=>{
         response: res
     });
 
-    //funcion mensaje
+    //Ejemplo de mensaje simple
     function demo(agent){
         agent.add("Enviando respuesta al Wekhook server");
     }
 
-    //funcion mensaje enriquecido
+    //Ejemplo de mensaje enriquecido
     function customPayloadDemo(agent){
         var payloadData = {
                 "richContent": [
@@ -46,15 +46,11 @@ app.post('/',express.json(), (req,res)=>{
         }))      
     }
 
-    //funcion para traer parametros
+    //Ejemplo de mensajes capturando entidad del
     function getQuestionYes(agent){
-      var contexto =  agent.context.get('getQuestion-followup');
       var parametros = req.body.queryResult.parameters;
       console.log("respuesta: "+JSON.stringify(parametros));
-      //para entidades
       var afirmativo = parametros.afirmativo;
-      //para contextos
-      /*var negativo = contexto.parameters.negativo;*/
       agent.context.set({'name': 'getQuestion - yes', 'lifespan': 1, 'parameters': {'afirmativo': afirmativo}});
       agent.add("Todo bien");
     }
@@ -69,6 +65,7 @@ app.post('/',express.json(), (req,res)=>{
 
 
     //-------------------------------
+    //Conexion de intent con la funccion con la que van a interactuar
     var intentMap = new Map();
     //Intent y funcion para interactuar
     intentMap.set('webhookDemo', demo);
@@ -90,8 +87,5 @@ app.listen(process.env.PORT || port, function () {
   console.log(`  Ejemplo escuchando en: ( http://localhost:${port} )`);
   console.log('\x1b[36m'+'------------------------------------------------ ');
   console.log('\x1b[0m');
-
-
-  
 });
 //Correr en nodemon --> npm run dev
