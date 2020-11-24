@@ -4,7 +4,9 @@ const dfff = require('dialogflow-fulfillment');
 
 //Mensaje principal endpoint
 app.get('/',(req,res)=>{
-    res.send("¡¡En directoo!!")
+    //res.send("¡¡En directoo!!")
+   res.sendFile('index.html', { root : __dirname})
+ 
 });
 
 
