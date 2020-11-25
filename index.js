@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dfff = require('dialogflow-fulfillment');
 const nodemailer = require("nodemailer");
+const axios = require('axios');
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -25,6 +26,10 @@ app.post('/', express.json(), (req, res) => {
         request: req,
         response: res
     });
+
+    //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
+    //console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
+
 
     //Ejemplo de mensaje simple
     function demo(agent) {
@@ -96,6 +101,24 @@ app.post('/', express.json(), (req, res) => {
     }
     */
 
+    function saveOrder(agent) {
+        const pizza = agent.parameters.Menu;
+
+        /*axios.post('https://sheetdb.io/api/v1/0d2axb6uloszu', {
+            "data": { "name": pizza, "created_at": Date.now() }
+        }).then(res => {
+            console.log(res.data);
+        });*/
+
+        agent.add(`Okay, your ` + pizza + ` will be ready in 45 minutes. `);
+
+        /*return axios.get('https://sheetdb.io/api/v1/0d2axb6uloszu')
+            .then(res => {
+                console.log(res.data);
+            });
+            */
+
+    }
 
     //-------------------------------
     //Conexion de intent con la funccion con la que van a interactuar
@@ -105,7 +128,8 @@ app.post('/', express.json(), (req, res) => {
     intentMap.set('customPayloadDemo', customPayloadDemo);
     intentMap.set('getQuestion - yes', getQuestionYes);
     intentMap.set('getQuestion - no', getQuestionNo);
-    intentMap.set('sendEmail', sendEmailHandler);
+    //intentMap.set('sendEmail', sendEmailHandler);
+    //intentMap.set('Order a pizza', saveOrder);
     //
     agent.handleRequest(intentMap);
 })
