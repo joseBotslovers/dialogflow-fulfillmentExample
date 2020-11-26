@@ -4,21 +4,12 @@ const dfff = require('dialogflow-fulfillment');
 const nodemailer = require("nodemailer");
 const axios = require('axios');
 
-const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: 'jose@botslovers.com',
-        pass: '211188-c'
-    }
-});
-
 //Mensaje principal endpoint
 app.get('/', (req, res) => {
     //res.send("¡¡En directoo!!")
     res.sendFile('index.html', { root: __dirname })
 
 });
-
 
 app.post('/', express.json(), (req, res) => {
 
@@ -60,7 +51,7 @@ app.post('/', express.json(), (req, res) => {
         }))
     }
 
-    //Ejemplo de mensajes capturando entidad del
+    //Ejemplo de mensajes capturando entidad del intent
     function getQuestionYes(agent) {
         var parametros = req.body.queryResult.parameters;
         console.log("respuesta: " + JSON.stringify(parametros));
@@ -76,6 +67,16 @@ app.post('/', express.json(), (req, res) => {
         agent.context.set({ 'name': 'getQuestion - no', 'lifespan': 1, 'parameters': { 'negativo': negativo } });
         agent.add("Todo mal, Es una pena");
     }
+
+    //Nodemailer
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'jose@botslovers.com',
+            pass: '211188-c'
+        }
+    });
 
     /*
     function sendEmailHandler(agent) {
@@ -101,18 +102,20 @@ app.post('/', express.json(), (req, res) => {
     }
     */
 
+    //Usar Excel como BBDD con sheetDB y axios para las peticiones http
+
     function saveOrder(agent) {
         const pizza = agent.parameters.Menu;
 
-        /*axios.post('https://sheetdb.io/api/v1/0d2axb6uloszu', {
+        /*axios.post('https://sheetdb.io/api/v1/pikq7r2f1d3xu', {
             "data": { "name": pizza, "created_at": Date.now() }
         }).then(res => {
             console.log(res.data);
         });*/
 
-        agent.add(`Okay, your ` + pizza + ` will be ready in 45 minutes. `);
+        agent.add(`Okay, tu ` + pizza + ` estara lista en 40 minutos. `);
 
-        /*return axios.get('https://sheetdb.io/api/v1/0d2axb6uloszu')
+        /*return axios.get('https://sheetdb.io/api/v1/pikq7r2f1d3xu')
             .then(res => {
                 console.log(res.data);
             });
