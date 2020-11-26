@@ -71,12 +71,16 @@ app.post('/', express.json(), (req, res) => {
     }
 
     //Nodemailer
+    //Es conveniente en google/seguridad habilitar la opcion de "Acceso de aplicaciones poco seguras"
+    //https://myaccount.google.com/u/5/security
     var transport = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
+        service: 'Gmail',
         auth: {
-          user: "760a7fe4008f27",
-          pass: "22162ce18731b5"
+          user: "fulgencioPruebas@gmail.com",
+          pass: "Bots.ia77"
+        },
+        tls: {
+            rejectUnauthorized: false
         }
       });
 
@@ -84,7 +88,7 @@ app.post('/', express.json(), (req, res) => {
     function sendEmailHandler(agent) {
         const { email, name } = agent.parameters;
         console.log(email);
-        
+        //Para el mail que se va a enviar
         const mailOptions = {
             from: '"José Franco Nieto 👻" <foo@example.com>',
             to: email, 
@@ -92,18 +96,19 @@ app.post('/', express.json(), (req, res) => {
             text: "Hello world?", 
             html: `<p> hola ${name}. Esto es un email de prueba </p>`
         };
-   
-        transporter.sendMail(mailOptions, function(error, info) {
+        //controlar errores
+        transport.sendMail(mailOptions, function(error, info) {
             if (error) {
                 console.log(error);
             } else {
                 console.log('Email sent: ' + info.response);
+                console.log("Mensaje enviado a: %s", info.messageId);
             }
             
         });
         
         console.log("correo enviado");
-        console.log("Mensaje enviado a: %s", info.messageId);
+        
         agent.add(`Tu correo ha sido enviado ${name} por favor mira la bandeja de tu correo`);
     }
     
@@ -137,7 +142,7 @@ app.post('/', express.json(), (req, res) => {
     intentMap.set('customPayloadDemo', customPayloadDemo);
     intentMap.set('getQuestion - yes', getQuestionYes);
     intentMap.set('getQuestion - no', getQuestionNo);
-    //intentMap.set('sendEmail', sendEmailHandler);
+    intentMap.set('sendEmail', sendEmailHandler);
     intentMap.set('Order a pizza', saveOrder);
     //
     agent.handleRequest(intentMap);
