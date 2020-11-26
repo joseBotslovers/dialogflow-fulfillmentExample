@@ -18,7 +18,9 @@ app.post('/', express.json(), (req, res) => {
         response: res
     });
 
+    //Para ver cabeceras
     //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
+    //Para ver el body
     //console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
 
@@ -69,23 +71,25 @@ app.post('/', express.json(), (req, res) => {
     }
 
     //Nodemailer
-
-    const transporter = nodemailer.createTransport({
-        service: 'Gmail',
+    var transport = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 2525,
         auth: {
-            user: 'jose@botslovers.com',
-            pass: '211188-c'
+          user: "760a7fe4008f27",
+          pass: "22162ce18731b5"
         }
-    });
+      });
 
-    /*
+    
     function sendEmailHandler(agent) {
         const { email, name } = agent.parameters;
         console.log(email);
+        
         const mailOptions = {
-            from: "Jose Franco Nieto", // sender address
-            to: email, // list of receivers
-            subject: "Email para bots", // Subject line
+            from: '"José Franco Nieto 👻" <foo@example.com>',
+            to: email, 
+            subject: "Email para bots", 
+            text: "Hello world?", 
             html: `<p> hola ${name}. Esto es un email de prueba </p>`
         };
    
@@ -95,19 +99,20 @@ app.post('/', express.json(), (req, res) => {
             } else {
                 console.log('Email sent: ' + info.response);
             }
-
-            agent.add("Email enviado");
+            
         });
-
+        
+        console.log("correo enviado");
+        console.log("Mensaje enviado a: %s", info.messageId);
+        agent.add(`Tu correo ha sido enviado ${name} por favor mira la bandeja de tu correo`);
     }
-    */
+    
 
     //Usar Excel como BBDD con sheetDB y axios para las peticiones http
-
     function saveOrder(agent) {
         const pizza = agent.parameters.menu;
         var d = Date(); 
-        //fecha = d.toString() 
+        fecha = d.toString() 
     
         axios.post('https://sheetdb.io/api/v1/pikq7r2f1d3xu', {
             "data": { "name": pizza, "created_at": fecha }
@@ -119,12 +124,12 @@ app.post('/', express.json(), (req, res) => {
         .then(res => {
             console.log(res.data);
         });
-
+        
         agent.add(`Okay, tu ` + pizza + ` estara lista en 40 minutos. `);
 
     }
 
-    //-------------------------------
+//-------------------------------------------------------------------------------------
     //Conexion de intent con la funccion con la que van a interactuar
     var intentMap = new Map();
     //Intent y funcion para interactuar
@@ -137,7 +142,7 @@ app.post('/', express.json(), (req, res) => {
     //
     agent.handleRequest(intentMap);
 })
-
+//-------------------------------------------------------------------------------------
 // ARRANCAMOS EL SERVICIO
 const port = 3000;
 const dateTime = Date.now();
