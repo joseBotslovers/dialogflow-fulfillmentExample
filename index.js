@@ -88,7 +88,7 @@ app.post('/', express.json(), (req, res) => {
             subject: "Email para bots", // Subject line
             html: `<p> hola ${name}. Esto es un email de prueba </p>`
         };
-
+   
         transporter.sendMail(mailOptions, function(error, info) {
             if (error) {
                 console.log(error);
@@ -105,21 +105,22 @@ app.post('/', express.json(), (req, res) => {
     //Usar Excel como BBDD con sheetDB y axios para las peticiones http
 
     function saveOrder(agent) {
-        const pizza = agent.parameters.Menu;
-
-        /*axios.post('https://sheetdb.io/api/v1/pikq7r2f1d3xu', {
-            "data": { "name": pizza, "created_at": Date.now() }
+        const pizza = agent.parameters.menu;
+        var d = Date(); 
+        //fecha = d.toString() 
+    
+        axios.post('https://sheetdb.io/api/v1/pikq7r2f1d3xu', {
+            "data": { "name": pizza, "created_at": fecha }
         }).then(res => {
             console.log(res.data);
-        });*/
+        });
+
+        axios.get('https://sheetdb.io/api/v1/pikq7r2f1d3xu')
+        .then(res => {
+            console.log(res.data);
+        });
 
         agent.add(`Okay, tu ` + pizza + ` estara lista en 40 minutos. `);
-
-        /*return axios.get('https://sheetdb.io/api/v1/pikq7r2f1d3xu')
-            .then(res => {
-                console.log(res.data);
-            });
-            */
 
     }
 
@@ -132,7 +133,7 @@ app.post('/', express.json(), (req, res) => {
     intentMap.set('getQuestion - yes', getQuestionYes);
     intentMap.set('getQuestion - no', getQuestionNo);
     //intentMap.set('sendEmail', sendEmailHandler);
-    //intentMap.set('Order a pizza', saveOrder);
+    intentMap.set('Order a pizza', saveOrder);
     //
     agent.handleRequest(intentMap);
 })
