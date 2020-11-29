@@ -150,6 +150,16 @@ app.post('/', express.json(), (req, res) => {
 
     }
 
+    async function loginDelete(agent) {
+        const user = agent.parameters.eliminar;
+        console.log("usuario: " + user);
+
+        delete_BBDD(user);
+
+        agent.add("El usuario " + user + " ha sido eliminado");
+    }
+
+
 
     //-------------------------------------------------------------------------------------
     //Conexion de intent con la funccion con la que van a interactuar
@@ -162,6 +172,7 @@ app.post('/', express.json(), (req, res) => {
     intentMap.set('sendEmail', sendEmailHandler);
     intentMap.set('Order a pizza', saveOrder);
     intentMap.set('login_Registrar', loginInsert);
+    intentMap.set('login_Eliminar', loginDelete);
     //
     agent.handleRequest(intentMap);
 })
@@ -172,6 +183,13 @@ async function insert_BBDD(user, password) {
     console.log(q);
     await bbdd.ejecutaQuery(q);
 }
+
+async function delete_BBDD(user) {
+    var q1 = `DELETE FROM login WHERE user = '${user}'`;
+    console.log(q1);
+    await bbdd.ejecutaQuery(q1);
+}
+
 
 //-------------------------------------------------------------------------------------
 // ARRANCAMOS EL SERVICIO
