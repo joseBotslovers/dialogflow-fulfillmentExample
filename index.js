@@ -159,6 +159,15 @@ app.post('/', express.json(), (req, res) => {
         agent.add("El usuario " + user + " ha sido eliminado");
     }
 
+    async function loginConsultar(agent) {
+        const resultado = agent.parameters.resultado;
+        query_BBDD(resultado)
+        console.log(query_BBDD(resultado));
+        //console.log(JSON.stringify(resultado, null, 2));
+
+        agent.add("El usuario: " + resultado.user);
+        agent.add("La contraseña: " + resultado.password);
+    }
 
 
     //-------------------------------------------------------------------------------------
@@ -173,6 +182,8 @@ app.post('/', express.json(), (req, res) => {
     intentMap.set('Order a pizza', saveOrder);
     intentMap.set('login_Registrar', loginInsert);
     intentMap.set('login_Eliminar', loginDelete);
+    intentMap.set('login_query', loginConsultar);
+
     //
     agent.handleRequest(intentMap);
 })
@@ -189,6 +200,15 @@ async function delete_BBDD(user) {
     console.log(q1);
     await bbdd.ejecutaQuery(q1);
 }
+
+async function query_BBDD(user) {
+    var q1 = `SELECT * FROM login WHERE user = '${user}'`;
+    //console.log(q1);
+    var respuesta = await bbdd.ejecutaQuery(q1);
+    //console.log(respuesta);
+    return respuesta;
+}
+
 
 
 //-------------------------------------------------------------------------------------
