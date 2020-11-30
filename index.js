@@ -162,10 +162,15 @@ app.post('/', express.json(), (req, res) => {
     async function loginConsultar(agent) {
         const resultado = agent.parameters.resultado;
         query_BBDD(resultado)
-        console.log(query_BBDD(resultado));
+            //console.log(query_BBDD(resultado));
+            //console.log(query_BBDD(resultado).user);
+        const myOBJStr = JSON.stringify(resultado);
+        const parseOBJ = JSON.parse(myOBJStr)
+        console.log(myOBJStr);
+        console.log(parseOBJ);
         //console.log(JSON.stringify(resultado, null, 2));
 
-        agent.add("El usuario: " + resultado.user);
+        agent.add("El usuario: " + parseOBJ);
         agent.add("La contraseña: " + resultado.password);
     }
 
