@@ -161,17 +161,13 @@ app.post('/', express.json(), (req, res) => {
 
     async function loginConsultar(agent) {
         const resultado = agent.parameters.resultado;
-        query_BBDD(resultado)
-            //console.log(query_BBDD(resultado));
-            //console.log(query_BBDD(resultado).user);
-        const myOBJStr = JSON.stringify(resultado);
-        const parseOBJ = JSON.parse(myOBJStr)
-        console.log(myOBJStr);
-        console.log(parseOBJ);
-        //console.log(JSON.stringify(resultado, null, 2));
+        var resp = await query_BBDD(resultado);
 
-        agent.add("El usuario: " + parseOBJ);
-        agent.add("La contraseña: " + resultado.password);
+        console.log(resp[0].user);
+        console.log(resp[0].password);
+
+        agent.add("El usuario: " + resp[0].user);
+        agent.add("La contraseña: " + resp[0].password);
     }
 
 
@@ -208,9 +204,7 @@ async function delete_BBDD(user) {
 
 async function query_BBDD(user) {
     var q1 = `SELECT * FROM login WHERE user = '${user}'`;
-    //console.log(q1);
-    var respuesta = await bbdd.ejecutaQuery(q1);
-    //console.log(respuesta);
+    var respuesta = await bbdd.ejecutaQuery(q1);  
     return respuesta;
 }
 
